@@ -1,6 +1,9 @@
 'use client';
 
 import { Icons } from '@/components/icons';
+import { useRouter } from 'next/navigation';
+import { clearAuthData } from '@/lib/auth-storage';
+import { PATHS } from '@/lib/pages-path';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -29,6 +32,12 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+  const router = useRouter();
+
+  function handleLogout() {
+    clearAuthData();
+    router.push(PATHS.REDIRECT_AFTER_LOGOUT);
+  }
 
   return (
     <SidebarMenu>
@@ -95,7 +104,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <Icons.logout className='mr-2 h-4 w-4' />
               Log out
             </DropdownMenuItem>

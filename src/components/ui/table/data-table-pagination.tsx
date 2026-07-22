@@ -14,14 +14,19 @@ import { cn } from '@/lib/utils';
 interface DataTablePaginationProps<TData> extends React.ComponentProps<'div'> {
   table: Table<TData>;
   pageSizeOptions?: number[];
+  totalItems?: number;
 }
 
 export function DataTablePagination<TData>({
   table,
   pageSizeOptions = [10, 20, 30, 40, 50],
+  totalItems,
   className,
   ...props
 }: DataTablePaginationProps<TData>) {
+  const total = totalItems ?? table.getFilteredRowModel().rows.length;
+  const selectedCount = table.getFilteredSelectedRowModel().rows.length;
+
   return (
     <div
       className={cn(
@@ -31,13 +36,15 @@ export function DataTablePagination<TData>({
       {...props}
     >
       <div className='text-muted-foreground text-sm whitespace-nowrap'>
-        {table.getFilteredSelectedRowModel().rows.length > 0 ? (
+        {selectedCount > 0 ? (
           <>
-            {table.getFilteredSelectedRowModel().rows.length} of{' '}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
+            {selectedCount} of {total} row(s) selected.
           </>
         ) : (
-          <>{table.getFilteredRowModel().rows.length} row(s) total.</>
+          <span>
+            Total: <span className='text-foreground font-medium'>{total.toLocaleString()}</span>{' '}
+            record{total !== 1 ? 's' : ''}
+          </span>
         )}
       </div>
       <div className='flex items-center gap-2 sm:gap-6 lg:gap-8'>

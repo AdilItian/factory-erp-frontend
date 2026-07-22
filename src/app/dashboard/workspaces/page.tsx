@@ -1,28 +1,22 @@
-'use client';
-
+import { Metadata } from 'next';
 import PageContainer from '@/components/layout/page-container';
-import { OrganizationList } from '@clerk/nextjs';
-import { workspacesInfoContent } from '@/config/infoconfig';
+
+export const metadata: Metadata = {
+  title: 'Dashboard: Workspaces'
+};
 
 export default function WorkspacesPage() {
   return (
     <PageContainer
       pageTitle='Workspaces'
-      pageDescription='Manage your workspaces and switch between them'
-      infoContent={workspacesInfoContent}
+      pageDescription='Manage your workspaces and organizations.'
     >
-      <OrganizationList
-        appearance={{
-          elements: {
-            organizationListBox: 'space-y-2',
-            organizationPreview: 'rounded-lg border p-4 hover:bg-accent',
-            organizationPreviewMainIdentifier: 'text-lg font-semibold',
-            organizationPreviewSecondaryIdentifier: 'text-sm text-muted-foreground'
-          }
-        }}
-        afterSelectOrganizationUrl='/dashboard/workspaces/team'
-        afterCreateOrganizationUrl='/dashboard/workspaces/team'
-      />
+      <div className='flex flex-col items-center justify-center py-24 text-center'>
+        <p className='text-muted-foreground text-lg'>No authentication provider configured.</p>
+        <p className='text-muted-foreground mt-2 text-sm'>
+          Connect an auth provider to enable workspace management.
+        </p>
+      </div>
     </PageContainer>
   );
 }

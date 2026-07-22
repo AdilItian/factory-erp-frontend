@@ -36,33 +36,6 @@ export default function PrivacyPolicyPage() {
           </p>
         </section>
 
-        <section>
-          <h2 className='text-foreground mb-3 text-xl font-semibold'>Authentication by Clerk</h2>
-          <p className='text-muted-foreground text-base leading-relaxed'>
-            Our application uses{' '}
-            <a
-              href='https://clerk.com'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='text-primary font-medium hover:underline'
-            >
-              Clerk
-            </a>{' '}
-            to handle user authentication securely. All authentication processes, including sign-up,
-            sign-in, and password management, are managed by Clerk. For detailed information about
-            how Clerk processes and protects your data, please review their{' '}
-            <a
-              href='https://clerk.com/legal/privacy'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='text-primary font-medium hover:underline'
-            >
-              Privacy Policy
-            </a>
-            .
-          </p>
-        </section>
-
         {/* No data misuse */}
         <section>
           <h2 className='text-foreground mb-3 text-xl font-semibold'>No Data Misuse</h2>

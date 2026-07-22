@@ -62,7 +62,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             enableColorScheme
           >
             <Providers activeThemeValue={themeToApply}>
-              <Toaster />
+              <Toaster position='top-right' />
               {children}
             </Providers>
           </ThemeProvider>

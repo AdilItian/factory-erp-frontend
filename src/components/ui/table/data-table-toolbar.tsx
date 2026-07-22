@@ -14,11 +14,13 @@ import { Icons } from '@/components/icons';
 
 interface DataTableToolbarProps<TData> extends React.ComponentProps<'div'> {
   table: Table<TData>;
+  filterComponent?: React.ReactNode;
 }
 
 export function DataTableToolbar<TData>({
   table,
   children,
+  filterComponent,
   className,
   ...props
 }: DataTableToolbarProps<TData>) {
@@ -41,6 +43,7 @@ export function DataTableToolbar<TData>({
       {...props}
     >
       <div className='flex flex-1 flex-wrap items-center gap-2'>
+        {filterComponent}
         {columns.map((column) => (
           <DataTableToolbarFilter key={column.id} column={column} />
         ))}

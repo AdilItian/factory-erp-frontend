@@ -1,12 +1,12 @@
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  robots: {
-    index: false,
-    follow: false
-  }
-};
+import { Suspense } from 'react';
+import GuestGuard from '@/components/guards/guest-guard';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <div className='min-h-screen flex items-center justify-center bg-background'>
+      <Suspense>
+        <GuestGuard>{children}</GuestGuard>
+      </Suspense>
+    </div>
+  );
 }

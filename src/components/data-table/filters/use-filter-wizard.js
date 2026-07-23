@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { NO_VALUE_OPERATORS } from './filter-schema';
+import { NO_VALUE_OPERATORS, OPERATORS_BY_TYPE } from './filter-schema';
 
 export const WIZARD_STEPS = {
   FIELD: 'field',
@@ -13,7 +13,7 @@ export const WIZARD_STEPS = {
  * Manages the 3-step wizard state: field → operator → value.
  * Also handles edit mode when user clicks an existing chip.
  */
-export function useFilterWizard({ onApply, onRemove }) {
+export function useFilterWizard({ onApply, onRemove, filterConfig }) {
   const [step, setStep] = useState(WIZARD_STEPS.FIELD);
   const [draft, setDraft] = useState({ id: null, op: null, v: null });
   const [editingIndex, setEditingIndex] = useState(null);
@@ -25,9 +25,17 @@ export function useFilterWizard({ onApply, onRemove }) {
   }, []);
 
   const selectField = useCallback((fieldId) => {
-    setDraft({ id: fieldId, op: null, v: null });
-    setStep(WIZARD_STEPS.OPERATOR);
-  }, []);
+    const col = filterConfig?.columns?.find((c) => c.id === fieldId);
+    const ops = col ? (OPERATORS_BY_TYPE[col.type] ?? []) : [];
+    if (ops.length === 1) {
+      // single operator — auto-select it and jump straight to value
+      setDraft({ id: fieldId, op: ops[0], v: null });
+      setStep(WIZARD_STEPS.VALUE);
+    } else {
+      setDraft({ id: fieldId, op: null, v: null });
+      setStep(WIZARD_STEPS.OPERATOR);
+    }
+  }, [filterConfig]);
 
   const selectOperator = useCallback(
     (op) => {

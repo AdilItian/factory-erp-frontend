@@ -5,6 +5,7 @@ import * as React from 'react';
 
 import { DataTableDateFilter } from '@/components/ui/table/data-table-date-filter';
 import { DataTableFacetedFilter } from '@/components/ui/table/data-table-faceted-filter';
+import { DataTableRadioFilter } from '@/components/ui/table/data-table-radio-filter';
 import { DataTableSliderFilter } from '@/components/ui/table/data-table-slider-filter';
 import { DataTableViewOptions } from '@/components/ui/table/data-table-view-options';
 import { Button } from '@/components/ui/button';
@@ -129,6 +130,15 @@ function DataTableToolbarFilter<TData>({ column }: DataTableToolbarFilterProps<T
               title={columnMeta.label ?? column.id}
               options={columnMeta.options ?? []}
               multiple={columnMeta.variant === 'multiSelect'}
+            />
+          );
+
+        case 'radioSelect':
+          return (
+            <DataTableRadioFilter
+              column={column}
+              title={columnMeta.label ?? column.id}
+              options={columnMeta.options ?? []}
             />
           );
 

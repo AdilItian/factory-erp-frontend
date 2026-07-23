@@ -52,6 +52,9 @@ export const dataTableConfig = {
     { label: 'Asc', value: 'asc' as const },
     { label: 'Desc', value: 'desc' as const }
   ],
+  radioSelectOperators: [
+    { label: 'Contains', value: 'iLike' as const }
+  ],
   filterVariants: [
     'text',
     'number',
@@ -60,7 +63,8 @@ export const dataTableConfig = {
     'dateRange',
     'boolean',
     'select',
-    'multiSelect'
+    'multiSelect',
+    'radioSelect'
   ] as const,
   operators: [
     'iLike',

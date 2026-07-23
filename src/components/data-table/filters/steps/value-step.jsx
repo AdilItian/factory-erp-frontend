@@ -5,6 +5,7 @@ import { TextFilterInput } from '../inputs/text-filter-input';
 import { NumberFilterInput } from '../inputs/number-filter-input';
 import { DateFilterInput } from '../inputs/date-filter-input';
 import { MultiSelectFilterInput } from '../inputs/multi-select-filter-input';
+import { RadioSelectFilterInput } from '../inputs/radio-select-filter-input';
 
 export function ValueStep({ fieldType, operator, value, options, onChange }) {
   if (fieldType === FILTER_TYPES.TEXT) {
@@ -35,6 +36,16 @@ export function ValueStep({ fieldType, operator, value, options, onChange }) {
     return (
       <MultiSelectFilterInput
         value={Array.isArray(value) ? value : []}
+        onChange={onChange}
+        options={options ?? []}
+      />
+    );
+  }
+
+  if (fieldType === FILTER_TYPES.SELECT) {
+    return (
+      <RadioSelectFilterInput
+        value={typeof value === 'string' ? value : ''}
         onChange={onChange}
         options={options ?? []}
       />

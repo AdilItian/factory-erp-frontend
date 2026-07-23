@@ -1,5 +1,6 @@
 import { FILTER_TYPES, OPERATORS } from '@/components/data-table/filters/filter-schema';
 
+
 function toEpoch(dateStr) {
   if (!dateStr) return null;
   return new Date(dateStr).getTime();
@@ -23,7 +24,8 @@ export const OPERATOR_TO_API = {
   [OPERATORS.IN]: 'IN',
   [OPERATORS.NOT_IN]: 'NOT_IN',
   [OPERATORS.IS_EMPTY]: 'IS_NULL',
-  [OPERATORS.IS_NOT_EMPTY]: 'IS_NOT_NULL'
+  [OPERATORS.IS_NOT_EMPTY]: 'IS_NOT_NULL',
+  [OPERATORS.LIKE]: 'LIKE'
 };
 
 /**
@@ -85,7 +87,7 @@ export const projectsFilterConfig = {
     {
       id: 'projectStatus',
       label: 'Status',
-      type: FILTER_TYPES.ENUM,
+      type: FILTER_TYPES.SELECT,
       options: [
         { label: 'Approved', value: 'APPROVED' },
         { label: 'Submitted for Approval', value: 'SUBMITTED_FOR_APPROVAL' },

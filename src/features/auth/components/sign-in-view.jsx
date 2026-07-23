@@ -48,11 +48,14 @@ export default function SignInViewPage() {
     onSuccess: (data) => {
       if (data?.status == RESPONSE_STATUSES[200]) {
         saveAuthData(data.data);
+        toast.success('Welcome back!');
         router.push(PATHS.REDIRECT_AFTER_LOGIN);
       } else {
-        console.log(data);
-        toast.error(data?.description);
+        toast.error(data?.description ?? 'Login failed');
       }
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.description ?? 'Login failed');
     }
   });
 

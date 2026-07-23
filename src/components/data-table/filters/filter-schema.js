@@ -5,7 +5,8 @@ export const FILTER_TYPES = {
   NUMBER: 'number',
   DATE: 'date',
   ENUM: 'enum',
-  BOOLEAN: 'boolean'
+  BOOLEAN: 'boolean',
+  SELECT: 'select'
 };
 
 export const OPERATORS = {
@@ -35,7 +36,9 @@ export const OPERATORS = {
   NOT_IN: 'notIn',
   // boolean
   IS_TRUE: 'isTrue',
-  IS_FALSE: 'isFalse'
+  IS_FALSE: 'isFalse',
+  // select (single, LIKE)
+  LIKE: 'like'
 };
 
 // Human-readable labels for each operator
@@ -61,7 +64,8 @@ export const OPERATOR_LABELS = {
   [OPERATORS.IN]: 'is any of',
   [OPERATORS.NOT_IN]: 'is none of',
   [OPERATORS.IS_TRUE]: 'is true',
-  [OPERATORS.IS_FALSE]: 'is false'
+  [OPERATORS.IS_FALSE]: 'is false',
+  [OPERATORS.LIKE]: 'is'
 };
 
 // Operators available per field type
@@ -98,7 +102,8 @@ export const OPERATORS_BY_TYPE = {
     OPERATORS.IS_NOT_EMPTY
   ],
   [FILTER_TYPES.ENUM]: [OPERATORS.IN, OPERATORS.NOT_IN],
-  [FILTER_TYPES.BOOLEAN]: [OPERATORS.IS_TRUE, OPERATORS.IS_FALSE]
+  [FILTER_TYPES.BOOLEAN]: [OPERATORS.IS_TRUE, OPERATORS.IS_FALSE],
+  [FILTER_TYPES.SELECT]: [OPERATORS.LIKE]
 };
 
 // Operators that need no value input — apply immediately after selection

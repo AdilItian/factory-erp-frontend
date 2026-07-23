@@ -61,7 +61,7 @@ export function FilterPopover({ filterConfig, conditions = [], onChange }) {
     editFilter,
     goToStep,
     goBack
-  } = useFilterWizard({ onApply: handleApply, onRemove: handleRemove });
+  } = useFilterWizard({ onApply: handleApply, onRemove: handleRemove, filterConfig });
 
   function handleOpenChange(next) {
     setOpen(next);
@@ -76,7 +76,9 @@ export function FilterPopover({ filterConfig, conditions = [], onChange }) {
   const activeField = filterConfig.columns.find((c) => c.id === draft.id);
   const canApply =
     draft.id && draft.op && !NO_VALUE_OPERATORS.has(draft.op)
-      ? draft.v !== null && draft.v !== '' && !(Array.isArray(draft.v) && draft.v.length === 0)
+      ? draft.v !== null &&
+        draft.v !== '' &&
+        !(Array.isArray(draft.v) && draft.v.length === 0)
       : false;
 
   return (

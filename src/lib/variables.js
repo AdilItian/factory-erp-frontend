@@ -1,5 +1,5 @@
 const getEnvironment = () => {
-  return process.env.NEXT_PUBLIC_APP_ENV || "local";
+  return process.env.NEXT_PUBLIC_APP_ENV || "live";
 };
 
 const configs = {
@@ -7,8 +7,7 @@ const configs = {
     BOILER_PLATE_BACKEND_BASE_URL: "http://localhost:5000",
   },
   live: {
-    CORE_SERVICE_BASE_URL: "https://core-api.we-aid.org",
-    USER_SERVICE_BASE_URL: "https://user-api.we-aid.org",
+    BOILER_PLATE_BACKEND_BASE_URL: process.env.NEXT_PUBLIC_BOILER_PLATE_BACKEND_BASE_URL,
   },
 };
 

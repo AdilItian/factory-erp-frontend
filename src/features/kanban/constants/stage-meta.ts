@@ -1,4 +1,13 @@
-export const STAGE_META = {
+export type StageTone = 'quiet' | 'signal' | 'focus' | 'alert' | 'settled';
+
+export type StageMeta = {
+  title: string;
+  short: string;
+  index: string;
+  tone: StageTone;
+};
+
+export const STAGE_META: Record<string, StageMeta> = {
   backlog: {
     title: 'Backlog',
     short: 'Backlog',
@@ -61,11 +70,12 @@ export const STAGE_META = {
   }
 };
 
-export function getStageMeta(value) {
+export function getStageMeta(value: string | number): StageMeta {
+  const key = String(value);
   return (
-    STAGE_META[value] ?? {
-      title: value,
-      short: value,
+    STAGE_META[key] ?? {
+      title: key,
+      short: key,
       index: '—',
       tone: 'quiet'
     }

@@ -1,9 +1,11 @@
 'use client';
 
-export function useFilteredNavItems(items) {
+import type { NavGroup, NavItem } from '@/types';
+
+export function useFilteredNavItems(items?: NavItem[] | null): NavItem[] {
   return items ?? [];
 }
 
-export function useFilteredNavGroups(groups) {
+export function useFilteredNavGroups(groups?: NavGroup[] | null): NavGroup[] {
   return (groups ?? []).filter((group) => (group.items?.length ?? 0) > 0);
 }

@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 
 const TIP_STORAGE_KEY = 'kanban-board-pan-tip-dismissed-v7';
 
-export function BoardPanTip({ className }) {
+export function BoardPanTip({ className } = {}) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {

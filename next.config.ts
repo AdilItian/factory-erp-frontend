@@ -22,8 +22,12 @@ const baseConfig: NextConfig = {
 
 let configWithPlugins = baseConfig;
 
-// Conditionally enable Sentry configuration
-if (!process.env.NEXT_PUBLIC_SENTRY_DISABLED) {
+// Only enable Sentry when explicitly configured (avoids broken Netlify builds)
+const sentryEnabled =
+  process.env.NEXT_PUBLIC_SENTRY_DISABLED !== 'true' &&
+  Boolean(process.env.NEXT_PUBLIC_SENTRY_ORG && process.env.NEXT_PUBLIC_SENTRY_PROJECT);
+
+if (sentryEnabled) {
   configWithPlugins = withSentryConfig(configWithPlugins, {
     org: process.env.NEXT_PUBLIC_SENTRY_ORG,
     project: process.env.NEXT_PUBLIC_SENTRY_PROJECT,
@@ -49,9 +53,8 @@ if (!process.env.NEXT_PUBLIC_SENTRY_DISABLED) {
       }
     },
 
-    // Disable source map upload when org/project are not configured
     sourcemaps: {
-      disable: !process.env.NEXT_PUBLIC_SENTRY_ORG || !process.env.NEXT_PUBLIC_SENTRY_PROJECT
+      disable: false
     }
   });
 }

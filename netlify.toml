@@ -1,0 +1,12 @@
+[build]
+  command = "bun run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NEXT_PUBLIC_SENTRY_DISABLED = "true"
+  NEXT_PUBLIC_APP_ENV = "dev"
+
+# Required so Netlify runs Next.js (SSR / App Router) instead of static hosting
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

@@ -7,11 +7,14 @@ import { z } from 'zod';
 import LoadingButton from '@/components/ui/loading-button';
 import FormBuilder from '@/components/ui/form-builder';
 import Link from 'next/link';
-import { useRegisterMutation } from '@/tanstack/auth/mutations';
+import { useRegisterMutation } from '@/features/auth/api/mutations';
 import { saveAuthData } from '@/lib/auth-storage';
 import { toast } from 'sonner';
-import { RESPONSE_STATUSES } from '@/lib/response-statuses';
 import { PATHS } from '@/lib/pages-path';
+import {
+  getAuthErrorMessage,
+  normalizeAuthResponse
+} from '@/features/auth/utils/normalize-auth-response';
 
 const registerSchema = z
   .object({
@@ -66,16 +69,18 @@ export default function SignUpViewPage() {
 
   const { mutate: register, isPending } = useRegisterMutation({
     onSuccess: (data) => {
-      if (data?.status === RESPONSE_STATUSES[200] || data?.status === RESPONSE_STATUSES[201]) {
-        saveAuthData(data.data);
+      const result = normalizeAuthResponse(data);
+
+      if (result.success) {
+        saveAuthData(result.auth);
         toast.success('Account created successfully!');
         router.push(PATHS.REDIRECT_AFTER_LOGIN);
       } else {
-        toast.error(data?.description ?? 'Registration failed');
+        toast.error(result.message ?? 'Registration failed');
       }
     },
     onError: (error) => {
-      toast.error(error?.response?.data?.description ?? 'Registration failed');
+      toast.error(getAuthErrorMessage(error, 'Registration failed'));
     }
   });
 

@@ -11,16 +11,17 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { UserAvatarProfile } from '@/components/user-avatar-profile';
 import { useRouter } from 'next/navigation';
-import { clearAuthData, getUser } from '@/lib/auth-storage';
+import { clearAuthData } from '@/lib/auth-storage';
+import { getAuthUser } from '@/features/auth/utils/get-auth-user';
 import { PATHS } from '@/lib/pages-path';
 
 export function UserNav() {
   const router = useRouter();
-  const raw = getUser();
+  const authUser = getAuthUser();
   const user = {
-    imageUrl: raw?.imageUrl || raw?.avatar || raw?.profilePicture || '',
-    fullName: raw?.fullName || raw?.name || raw?.username || 'User',
-    emailAddresses: [{ emailAddress: raw?.email || raw?.emailAddress || '' }]
+    imageUrl: authUser.imageUrl,
+    fullName: authUser.email || authUser.name || '',
+    emailAddresses: [{ emailAddress: authUser.name || '' }]
   };
 
   function handleLogout() {

@@ -43,6 +43,7 @@ import {
   IconFileZip,
   IconFolder,
   IconGripVertical,
+  IconHandMove,
   IconHelpCircle,
   IconInfoCircle,
   IconItalic,
@@ -70,6 +71,7 @@ import {
   IconSend,
   IconSettings,
   IconShare,
+  IconShield,
   IconSlash,
   IconSparkles,
   IconStack2,
@@ -137,6 +139,7 @@ export const Icons = {
   employee: IconUserX,
   userPen: IconUserEdit,
   teams: IconUsers,
+  shield: IconShield,
 
   // Brand
   github: IconBrandGithub,
@@ -169,6 +172,7 @@ export const Icons = {
   login: IconLogin,
   logout: IconLogout,
   gripVertical: IconGripVertical,
+  handMove: IconHandMove,
 
   // Shapes / Indicators
   circle: IconCircle,

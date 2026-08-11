@@ -4,7 +4,7 @@ const USER_KEY = 'user';
 
 export function saveAuthData({ token, user }) {
   localStorage.setItem(ACCESS_TOKEN_KEY, token);
-  localStorage.setItem(USER_KEY, JSON.stringify(user));
+  localStorage.setItem(USER_KEY, JSON.stringify(user ?? {}));
 }
 
 export function getAccessToken() {

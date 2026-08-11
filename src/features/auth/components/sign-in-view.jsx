@@ -7,11 +7,14 @@ import { z } from 'zod';
 import LoadingButton from '@/components/ui/loading-button';
 import FormBuilder from '@/components/ui/form-builder';
 import Link from 'next/link';
-import { useLoginMutation } from '@/tanstack/auth/mutations';
+import { useLoginMutation } from '@/features/auth/api/mutations';
 import { saveAuthData } from '@/lib/auth-storage';
 import { toast } from 'sonner';
-import { RESPONSE_STATUSES } from '@/lib/response-statuses';
 import { PATHS } from '@/lib/pages-path';
+import {
+  getAuthErrorMessage,
+  normalizeAuthResponse
+} from '@/features/auth/utils/normalize-auth-response';
 const loginSchema = z.object({
   email: z.string().email('Enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters')
@@ -46,16 +49,18 @@ export default function SignInViewPage() {
 
   const { mutate: login, isPending } = useLoginMutation({
     onSuccess: (data) => {
-      if (data?.status == RESPONSE_STATUSES[200]) {
-        saveAuthData(data.data);
+      const result = normalizeAuthResponse(data);
+
+      if (result.success) {
+        saveAuthData(result.auth);
         toast.success('Welcome back!');
         router.push(PATHS.REDIRECT_AFTER_LOGIN);
       } else {
-        toast.error(data?.description ?? 'Login failed');
+        toast.error(result.message ?? 'Login failed');
       }
     },
     onError: (error) => {
-      toast.error(error?.response?.data?.description ?? 'Login failed');
+      toast.error(getAuthErrorMessage(error));
     }
   });
 

@@ -4,7 +4,7 @@ import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import { projectKeys } from '@/lib/query-keys';
 
 async function fetchProjects(params, filterBody = []) {
-  const res = await boilerplateClient.post(API_ENDPOINTS.PROJECTS.ALL, filterBody, {
+  const res = await boilerplateClient.post(API_ENDPOINTS.PROJECTS.BOILERPLATE_LIST, filterBody, {
     params,
     headers: { locale: 'EN' }
   });

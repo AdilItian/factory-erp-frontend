@@ -4,7 +4,8 @@ export interface PermissionCheck {
   permission?: string;
   plan?: string;
   feature?: string;
-  role?: string;
+  /** Single role or any-of list (e.g. 'admin' or ['admin', 'project_manager']) */
+  role?: string | string[];
   requireOrg?: boolean;
 }
 

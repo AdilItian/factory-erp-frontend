@@ -1,14 +1,9 @@
-import PageContainer from '@/components/layout/page-container';
-import ProjectListingPage from '@/features/project/components/project-listing';
+import ProjectsManagementPage from '@/features/projects/components/projects-management-page';
 
 export const metadata = {
-  title: 'Projects'
+  title: 'Dashboard: Projects'
 };
 
 export default function ProjectsPage() {
-  return (
-    <PageContainer pageTitle='Projects' pageDescription='Browse and manage all projects.'>
-      <ProjectListingPage />
-    </PageContainer>
-  );
+  return <ProjectsManagementPage />;
 }

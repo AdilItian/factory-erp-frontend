@@ -2,44 +2,69 @@
 
 import { Badge } from '@/components/ui/badge';
 import { KanbanItem } from '@/components/ui/kanban';
+import { cn } from '@/lib/utils';
 import type { Task } from '../utils/store';
 
 interface TaskCardProps extends Omit<React.ComponentProps<typeof KanbanItem>, 'value'> {
   task: Task;
+  onTaskClick?: (task: Task) => void;
 }
 
-export function TaskCard({ task, ...props }: TaskCardProps) {
+function initials(name?: string) {
+  if (!name) return null;
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return null;
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+}
+
+export function TaskCard({ task, onTaskClick, className, ...props }: TaskCardProps) {
+  const person = initials(task.assignee);
+
   return (
     <KanbanItem
       key={task.id}
       value={task.id}
       {...props}
-      render={<div className='bg-card rounded-md border p-3 shadow-xs' />}
+      className={cn(onTaskClick && 'cursor-pointer', className)}
+      onClick={() => onTaskClick?.(task)}
+      render={
+        <div className='bg-card hover:bg-card/95 rounded-lg border p-3 shadow-xs transition-colors' />
+      }
     >
-      <div className='flex flex-col gap-2'>
-        <div className='flex items-center justify-between gap-2'>
-          <span className='line-clamp-1 text-sm font-medium'>{task.title}</span>
+      <div className='flex flex-col gap-2.5'>
+        <div className='flex items-start justify-between gap-2'>
+          <p className='text-foreground line-clamp-2 text-sm leading-snug font-medium'>
+            {task.title}
+          </p>
           <Badge
             variant={
               task.priority === 'high'
                 ? 'destructive'
                 : task.priority === 'medium'
-                  ? 'default'
-                  : 'secondary'
+                  ? 'secondary'
+                  : 'outline'
             }
-            className='pointer-events-none h-5 rounded-sm px-1.5 text-[11px] capitalize'
+            className='pointer-events-none h-5 shrink-0 px-1.5 text-[10px] capitalize'
           >
             {task.priority}
           </Badge>
         </div>
-        <div className='text-muted-foreground flex items-center justify-between text-xs'>
-          {task.assignee && (
-            <div className='flex items-center gap-1'>
-              <div className='bg-primary/20 size-2 rounded-full' />
-              <span className='line-clamp-1'>{task.assignee}</span>
+
+        <div className='text-muted-foreground flex items-center justify-between gap-2 text-xs'>
+          {person ? (
+            <div className='flex min-w-0 items-center gap-1.5'>
+              <span className='bg-muted text-foreground flex size-5 shrink-0 items-center justify-center rounded-full text-[9px] font-semibold'>
+                {person}
+              </span>
+              <span className='truncate'>{task.assignee}</span>
             </div>
+          ) : (
+            <span>Unassigned</span>
           )}
-          {task.dueDate && <time className='text-[10px] tabular-nums'>{task.dueDate}</time>}
+          {task.dueDate ? (
+            <time className='shrink-0 tabular-nums'>{task.dueDate}</time>
+          ) : null}
         </div>
       </div>
     </KanbanItem>

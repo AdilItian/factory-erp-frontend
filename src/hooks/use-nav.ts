@@ -1,12 +1,9 @@
 'use client';
 
-import { useMemo } from 'react';
-import type { NavItem, NavGroup } from '@/types';
-
-export function useFilteredNavItems(items: NavItem[]) {
-  return useMemo(() => items, [items]);
+export function useFilteredNavItems(items) {
+  return items ?? [];
 }
 
-export function useFilteredNavGroups(groups: NavGroup[]) {
-  return useMemo(() => groups.filter((g) => g.items.length > 0), [groups]);
+export function useFilteredNavGroups(groups) {
+  return (groups ?? []).filter((group) => (group.items?.length ?? 0) > 0);
 }

@@ -24,11 +24,12 @@ import {
   SidebarMenuSubItem,
   SidebarRail
 } from '@/components/ui/sidebar';
-import { UserAvatarProfile } from '@/components/user-avatar-profile';
+import SidebarUserProfile from '@/features/auth/components/sidebar-user-profile';
 import { navGroups } from '@/config/nav-config';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useFilteredNavGroups } from '@/hooks/use-nav';
-import { clearAuthData, getUser } from '@/lib/auth-storage';
+import { clearAuthData } from '@/lib/auth-storage';
+import { getAuthUser } from '@/features/auth/utils/get-auth-user';
 import { PATHS } from '@/lib/pages-path';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -36,21 +37,12 @@ import * as React from 'react';
 import { Icons } from '../icons';
 import { OrgSwitcher } from '../org-switcher';
 
-function toAvatarUser(raw: ReturnType<typeof getUser>) {
-  if (!raw) return { imageUrl: '', fullName: 'User', emailAddresses: [{ emailAddress: '' }] };
-  return {
-    imageUrl: raw.imageUrl || raw.avatar || raw.profilePicture || '',
-    fullName: raw.fullName || raw.name || raw.username || 'User',
-    emailAddresses: [{ emailAddress: raw.email || raw.emailAddress || '' }]
-  };
-}
-
 export default function AppSidebar() {
   const pathname = usePathname();
   const { isOpen } = useMediaQuery();
   const router = useRouter();
   const filteredGroups = useFilteredNavGroups(navGroups);
-  const user = toAvatarUser(getUser());
+  const user = getAuthUser();
 
   function handleLogout() {
     clearAuthData();
@@ -134,7 +126,7 @@ export default function AppSidebar() {
                   />
                 }
               >
-                <UserAvatarProfile className='h-8 w-8 rounded-lg' showInfo user={user} />
+                <SidebarUserProfile user={user} />
                 <Icons.chevronsDown className='ml-auto size-4' />
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -146,7 +138,7 @@ export default function AppSidebar() {
                 <DropdownMenuGroup>
                   <DropdownMenuLabel className='p-0 font-normal'>
                     <div className='px-1 py-1.5'>
-                      <UserAvatarProfile className='h-8 w-8 rounded-lg' showInfo user={user} />
+                      <SidebarUserProfile user={user} />
                     </div>
                   </DropdownMenuLabel>
                 </DropdownMenuGroup>

@@ -1,11 +1,9 @@
 import KBar from '@/components/kbar';
-import AppSidebar from '@/components/layout/app-sidebar';
 import Header from '@/components/layout/header';
 import { InfoSidebar } from '@/components/layout/info-sidebar';
+import { NavConstellationDock } from '@/components/layout/nav-constellation-dock';
 import { InfobarProvider } from '@/components/ui/infobar';
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import type { Metadata } from 'next';
-import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
   title: 'Next Shadcn Dashboard Starter',
@@ -16,22 +14,17 @@ export const metadata: Metadata = {
   }
 };
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  // Persisting the sidebar state in the cookie.
-  const cookieStore = await cookies();
-  const defaultOpen = cookieStore.get('sidebar_state')?.value === 'true';
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <KBar>
-      <SidebarProvider defaultOpen={defaultOpen}>
-        <AppSidebar />
-        <SidebarInset>
-          <Header />
-          <InfobarProvider defaultOpen={false}>
-            {children}
-            <InfoSidebar side='right' />
-          </InfobarProvider>
-        </SidebarInset>
-      </SidebarProvider>
+      <div className='bg-background relative flex min-h-svh flex-col'>
+        <Header />
+        <InfobarProvider defaultOpen={false}>
+          <div className='relative flex min-w-0 flex-1 flex-col pb-28'>{children}</div>
+          <InfoSidebar side='right' />
+        </InfobarProvider>
+        <NavConstellationDock />
+      </div>
     </KBar>
   );
 }

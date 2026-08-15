@@ -2,43 +2,28 @@
 import { navGroups } from '@/config/nav-config';
 import { KBarAnimator, KBarPortal, KBarPositioner, KBarProvider, KBarSearch } from 'kbar';
 import { useRouter } from 'next/navigation';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import RenderResults from './render-result';
 import useThemeSwitching from './use-theme-switching';
 import { useFilteredNavGroups } from '@/hooks/use-nav';
 
 export default function KBar({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const routerRef = useRef(router);
+  routerRef.current = router;
   const filteredGroups = useFilteredNavGroups(navGroups);
 
-  // These action are for the navigation
   const actions = useMemo(() => {
-    // Define navigateTo inside the useMemo callback to avoid dependency array issues
-    const navigateTo = (url: string) => {
-      router.push(url);
+    const navigateTo = (url) => {
+      routerRef.current.push(url);
     };
 
     const allItems = filteredGroups.flatMap((group) => group.items);
 
     return allItems.flatMap((navItem) => {
-      // Only include base action if the navItem has a real URL and is not just a container
-      const baseAction =
-        navItem.url !== '#'
-          ? {
-              id: `${navItem.title.toLowerCase()}Action`,
-              name: navItem.title,
-              shortcut: navItem.shortcut,
-              keywords: navItem.title.toLowerCase(),
-              section: 'Navigation',
-              subtitle: `Go to ${navItem.title}`,
-              perform: () => navigateTo(navItem.url)
-            }
-          : null;
-
-      // Map child items into actions
       const childActions =
         navItem.items?.map((childItem) => ({
-          id: `${childItem.title.toLowerCase()}Action`,
+          id: `${navItem.title}-${childItem.title}`.toLowerCase().replace(/\s+/g, '-'),
           name: childItem.title,
           shortcut: childItem.shortcut,
           keywords: childItem.title.toLowerCase(),
@@ -47,10 +32,27 @@ export default function KBar({ children }: { children: React.ReactNode }) {
           perform: () => navigateTo(childItem.url)
         })) ?? [];
 
-      // Return only valid actions (ignoring null base actions for containers)
-      return baseAction ? [baseAction, ...childActions] : childActions;
+      if (childActions.length > 0) {
+        return childActions;
+      }
+
+      if (navItem.url === '#') {
+        return [];
+      }
+
+      return [
+        {
+          id: `${navItem.title.toLowerCase()}Action`,
+          name: navItem.title,
+          shortcut: navItem.shortcut,
+          keywords: navItem.title.toLowerCase(),
+          section: 'Navigation',
+          subtitle: `Go to ${navItem.title}`,
+          perform: () => navigateTo(navItem.url)
+        }
+      ];
     });
-  }, [router, filteredGroups]);
+  }, [filteredGroups]);
 
   return (
     <KBarProvider actions={actions}>
@@ -58,6 +60,7 @@ export default function KBar({ children }: { children: React.ReactNode }) {
     </KBarProvider>
   );
 }
+
 const KBarComponent = ({ children }: { children: React.ReactNode }) => {
   useThemeSwitching();
 

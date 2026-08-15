@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import type { NavGroup, NavItem } from '@/types';
 
 export function useFilteredNavItems(items?: NavItem[] | null): NavItem[] {
@@ -7,5 +8,8 @@ export function useFilteredNavItems(items?: NavItem[] | null): NavItem[] {
 }
 
 export function useFilteredNavGroups(groups?: NavGroup[] | null): NavGroup[] {
-  return (groups ?? []).filter((group) => (group.items?.length ?? 0) > 0);
+  return useMemo(
+    () => (groups ?? []).filter((group) => (group.items?.length ?? 0) > 0),
+    [groups]
+  );
 }

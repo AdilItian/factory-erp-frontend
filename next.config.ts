@@ -1,7 +1,12 @@
 import type { NextConfig } from 'next';
 import { withSentryConfig } from '@sentry/nextjs';
 
-// Define the base Next.js configuration
+const isDev = process.env.NODE_ENV === 'development';
+const sentryDisabled =
+  isDev ||
+  process.env.NEXT_PUBLIC_SENTRY_DISABLED === 'true' ||
+  !process.env.NEXT_PUBLIC_SENTRY_DSN;
+
 const baseConfig: NextConfig = {
   output: process.env.BUILD_STANDALONE === 'true' ? 'standalone' : undefined,
   images: {
@@ -10,11 +15,13 @@ const baseConfig: NextConfig = {
         protocol: 'https',
         hostname: 'api.slingacademy.com',
         port: ''
-      },
-
+      }
     ]
   },
   transpilePackages: ['geist'],
+  experimental: {
+    optimizePackageImports: ['@tabler/icons-react', 'motion', 'recharts', 'date-fns']
+  },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production'
   }
@@ -22,24 +29,14 @@ const baseConfig: NextConfig = {
 
 let configWithPlugins = baseConfig;
 
-// Conditionally enable Sentry configuration
-if (!process.env.NEXT_PUBLIC_SENTRY_DISABLED) {
+if (!sentryDisabled) {
   configWithPlugins = withSentryConfig(configWithPlugins, {
     org: process.env.NEXT_PUBLIC_SENTRY_ORG,
     project: process.env.NEXT_PUBLIC_SENTRY_PROJECT,
-    // Only print logs for uploading source maps in CI
     silent: !process.env.CI,
-
-    // Upload a larger set of source maps for prettier stack traces (increases build time)
     widenClientFileUpload: true,
-
-    // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
     tunnelRoute: '/monitoring',
-
-    // Disable Sentry telemetry
     telemetry: false,
-
-    // Sentry v10: moved under webpack namespace
     webpack: {
       reactComponentAnnotation: {
         enabled: true
@@ -48,8 +45,6 @@ if (!process.env.NEXT_PUBLIC_SENTRY_DISABLED) {
         removeDebugLogging: true
       }
     },
-
-    // Disable source map upload when org/project are not configured
     sourcemaps: {
       disable: !process.env.NEXT_PUBLIC_SENTRY_ORG || !process.env.NEXT_PUBLIC_SENTRY_PROJECT
     }

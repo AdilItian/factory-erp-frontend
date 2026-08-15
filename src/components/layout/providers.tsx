@@ -2,6 +2,7 @@
 import React from 'react';
 import { ActiveThemeProvider } from '../themes/active-theme';
 import QueryProvider from './query-provider';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 export default function Providers({
   activeThemeValue,
@@ -12,7 +13,9 @@ export default function Providers({
 }) {
   return (
     <ActiveThemeProvider initialTheme={activeThemeValue}>
-      <QueryProvider>{children}</QueryProvider>
+      <QueryProvider>
+        <TooltipProvider delay={400}>{children}</TooltipProvider>
+      </QueryProvider>
     </ActiveThemeProvider>
   );
 }

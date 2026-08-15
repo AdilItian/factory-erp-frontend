@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
-/** Compact shared controls only — layouts stay feature-specific. */
 export function ListToolbar({
   search,
   onSearchChange,
@@ -29,7 +28,7 @@ export function ListToolbar({
           value={search ?? ''}
           onChange={(event) => onSearchChange?.(event.target.value)}
           placeholder={searchPlaceholder}
-          className='border-border/60 bg-background h-8 rounded-lg pl-8 text-sm shadow-none'
+          className='h-9 rounded-lg pl-8 text-sm shadow-none'
         />
       </div>
 

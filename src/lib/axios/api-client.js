@@ -24,10 +24,13 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401 && typeof window !== "undefined") {
-      const redirect = encodeURIComponent(
-        window.location.pathname + window.location.search,
-      );
-      window.location.href = `/auth/sign-in?redirect=${redirect}`;
+      const path = window.location.pathname;
+      if (!path.startsWith("/auth/")) {
+        const redirect = encodeURIComponent(
+          path + window.location.search,
+        );
+        window.location.href = `/auth/sign-in?redirect=${redirect}`;
+      }
     }
     return Promise.reject(error);
   },

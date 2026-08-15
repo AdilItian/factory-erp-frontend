@@ -8,189 +8,54 @@ import { Icons } from '@/components/icons';
 import { navGroups } from '@/config/nav-config';
 import { useFilteredNavGroups } from '@/hooks/use-nav';
 import { cn } from '@/lib/utils';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger
-} from '@/components/ui/tooltip';
-
-function isRouteActive(pathname, url) {
-  if (!url) return false;
-  if (pathname === url) return true;
-  return pathname.startsWith(`${url}/`);
-}
-
-function formatShortcut(shortcut) {
-  if (!Array.isArray(shortcut) || shortcut.length === 0) return null;
-  return shortcut.map((key) => String(key).toUpperCase()).join(' then ');
-}
-
-function BeaconTooltip({
-  label,
-  hint,
-  groupLabel,
-  shortcut,
-  icon: Icon,
-  active = false,
-  accent = false,
-  children
-}) {
-  const shortcutLabel = formatShortcut(shortcut);
-
-  return (
-    <Tooltip>
-      <TooltipTrigger render={children} />
-      <TooltipContent
-        side='top'
-        sideOffset={14}
-        showArrow={false}
-        className={cn(
-          'z-[60] w-[220px] overflow-hidden rounded-2xl border p-0 text-left shadow-2xl',
-          'bg-popover text-popover-foreground',
-          'animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-2 duration-200'
-        )}
-      >
-        <div className='relative overflow-hidden px-3.5 pt-3.5 pb-3'>
-          <div
-            aria-hidden
-            className={cn(
-              'pointer-events-none absolute -top-10 -right-8 size-28 rounded-full blur-2xl',
-              accent ? 'bg-foreground/15' : 'bg-primary/20'
-            )}
-          />
-          <div
-            aria-hidden
-            className='pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent'
-          />
-
-          <div className='relative flex items-start gap-3'>
-            <div
-              className={cn(
-                'mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl border shadow-xs',
-                accent
-                  ? 'bg-foreground text-background border-foreground'
-                  : active
-                    ? 'bg-primary text-primary-foreground border-primary'
-                    : 'bg-muted/80 text-foreground border-border/80'
-              )}
-            >
-              {Icon ? <Icon className='size-4' /> : <Icons.logo className='size-4' />}
-            </div>
-
-            <div className='min-w-0 flex-1 space-y-1.5'>
-              <div className='flex flex-wrap items-center gap-1.5'>
-                {groupLabel ? (
-                  <span className='text-muted-foreground rounded-md border px-1.5 py-0.5 text-[9px] font-semibold tracking-[0.14em] uppercase'>
-                    {groupLabel}
-                  </span>
-                ) : null}
-                {active ? (
-                  <span className='bg-primary/15 text-primary rounded-md px-1.5 py-0.5 text-[9px] font-semibold tracking-wide uppercase'>
-                    Here
-                  </span>
-                ) : null}
-              </div>
-
-              <p className='text-sm leading-tight font-semibold tracking-tight'>{label}</p>
-
-              {hint ? (
-                <p className='text-muted-foreground text-[11px] leading-relaxed'>{hint}</p>
-              ) : null}
-
-              {shortcutLabel || accent ? (
-                <div className='flex items-center gap-1.5 pt-0.5'>
-                  {shortcutLabel ? (
-                    <kbd className='bg-muted text-muted-foreground inline-flex items-center rounded-md border px-1.5 py-0.5 font-mono text-[10px] font-medium'>
-                      {shortcutLabel}
-                    </kbd>
-                  ) : null}
-                  {accent ? (
-                    <kbd className='bg-muted text-muted-foreground inline-flex items-center rounded-md border px-1.5 py-0.5 font-mono text-[10px] font-medium'>
-                      ⌘K
-                    </kbd>
-                  ) : null}
-                </div>
-              ) : null}
-            </div>
-          </div>
-        </div>
-      </TooltipContent>
-    </Tooltip>
-  );
-}
+import { DropdownMenu, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { BeaconTooltip, DockGroupMenu } from './nav-dock-flyouts';
+import { dockBeaconClass, isItemActive } from './nav-dock-utils';
 
 function DockBeacon({ item, groupLabel, index }) {
   const pathname = usePathname();
   const Icon = item.icon ? Icons[item.icon] : Icons.logo;
-  const active = isRouteActive(pathname, item.url);
+  const active = isItemActive(pathname, item);
   const hasChildren = Array.isArray(item.items) && item.items.length > 0;
   const hint =
     item.description ||
     (groupLabel ? `${groupLabel} · Open ${item.title}` : `Go to ${item.title}`);
+  const beaconClass = cn(dockBeaconClass(active));
 
-  const beaconClass = cn(
-    'relative flex size-10 shrink-0 items-center justify-center rounded-full transition-colors duration-200',
-    'outline-none focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-    active
-      ? 'bg-primary text-primary-foreground shadow-sm'
-      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-  );
-
-  const tooltipProps = {
-    label: item.title,
-    hint,
-    groupLabel,
-    shortcut: item.shortcut,
-    icon: Icon,
-    active
+  const motionProps = {
+    className: 'shrink-0',
+    initial: { opacity: 0, y: 12 },
+    animate: { opacity: 1, y: 0 },
+    transition: { delay: 0.04 * index, type: 'spring', stiffness: 380, damping: 28 }
   };
 
   if (hasChildren) {
     return (
-      <motion.div
-        className='shrink-0'
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.04 * index, type: 'spring', stiffness: 380, damping: 28 }}
-      >
+      <motion.div {...motionProps}>
         <DropdownMenu>
-          <BeaconTooltip {...tooltipProps}>
-            <DropdownMenuTrigger className={beaconClass} aria-label={item.title}>
-              <Icon className='size-4' />
-              {active ? (
-                <span className='bg-primary-foreground absolute bottom-1 size-1 rounded-full' />
-              ) : null}
-            </DropdownMenuTrigger>
-          </BeaconTooltip>
-          <DropdownMenuContent side='top' align='center' sideOffset={14} className='min-w-44'>
-            {item.items.map((subItem) => (
-              <DropdownMenuItem
-                key={subItem.title}
-                render={<Link href={subItem.url} />}
-              >
-                {subItem.title}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
+          <DropdownMenuTrigger className={beaconClass} aria-label={`${item.title} menu`}>
+            <Icon className='size-4' />
+            <Icons.chevronUp className='absolute top-0.5 size-2.5 opacity-70' />
+            {active ? (
+              <span className='bg-primary-foreground absolute bottom-1 size-1 rounded-full' />
+            ) : null}
+          </DropdownMenuTrigger>
+          <DockGroupMenu item={item} groupLabel={groupLabel} pathname={pathname} />
         </DropdownMenu>
       </motion.div>
     );
   }
 
   return (
-    <motion.div
-      className='shrink-0'
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.04 * index, type: 'spring', stiffness: 380, damping: 28 }}
-    >
-      <BeaconTooltip {...tooltipProps}>
+    <motion.div {...motionProps}>
+      <BeaconTooltip
+        label={item.title}
+        hint={hint}
+        groupLabel={groupLabel}
+        shortcut={item.shortcut}
+        icon={Icon}
+        active={active}
+      >
         <Link
           href={item.url}
           aria-label={item.title}
@@ -287,11 +152,7 @@ export function NavConstellationDock() {
             {isGroupStart ? (
               <div className='bg-border/70 mx-0.5 h-7 w-px shrink-0' aria-hidden />
             ) : null}
-            <DockBeacon
-              item={item}
-              groupLabel={groupLabel}
-              index={index}
-            />
+            <DockBeacon item={item} groupLabel={groupLabel} index={index} />
           </div>
         ))}
       </motion.div>

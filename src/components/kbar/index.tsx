@@ -14,7 +14,7 @@ export default function KBar({ children }: { children: React.ReactNode }) {
   const filteredGroups = useFilteredNavGroups(navGroups);
 
   const actions = useMemo(() => {
-    const navigateTo = (url) => {
+    const navigateTo = (url: string) => {
       routerRef.current.push(url);
     };
 
